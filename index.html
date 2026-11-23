@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>TalcoCloud</title>
+<meta name="description" content="TalcoCloud : tes notes personnelles et la communauté, synchronisées partout.">
+<meta name="theme-color" content="#1f9d7a">
+<script src="viewport.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TalcoCloud">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="glass.css">
+<link rel="preload" as="image" href="https://res.cloudinary.com/tbmdciyv/image/upload/v1794424488/file_00000000a65881f999e07af4977a3071.png" media="(max-width:760px), (orientation:portrait)" fetchpriority="high">
+<link rel="preload" as="image" href="https://res.cloudinary.com/tbmdciyv/image/upload/v1794424479/file_000000007bec820abe68fbdfca0b00ee.png" media="(min-width:761px) and (orientation:landscape)" fetchpriority="high">
+</head>
+<body data-tab="personal">
+<div id="wall" aria-hidden="true"></div>
+
+<!-- Connexion / création de compte -->
+<section id="auth" class="screen" hidden>
+  <div class="auth-wrap">
+    <div class="brand">
+      <img src="favicon.svg" alt="" width="76" height="76" class="logo">
+      <h2>Talco<span>Cloud</span></h2>
+      <p>Tes notes. Ta communauté. Partout.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Application -->
+<div id="app" hidden>
+  <main id="editorPane">
+    <div id="emptyState" class="empty">
+      <img src="favicon.svg" alt="" width="84" height="84">
+      <h2>Choisis une note</h2>
+      <p class="muted">Ou écris-en une nouvelle.</p>
+      <button class="btn primary" id="emptyNew" type="button">Nouvelle note</button>
+    </div>
+
+    <header class="topbar">
+      <button class="ib mobile-only" id="backBtn" type="button" aria-label="Retour aux notes">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <input id="noteTitle" type="text" placeholder="Titre" maxlength="120" aria-label="Titre de la note">
+      <button class="ib" id="pinBtn" type="button" aria-label="Épingler la note" title="Épingler">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6l-1 6 3 3v2H7v-2l3-3-1-6z"/><path d="M12 15v6"/></svg>
+      </button>
+      <button class="ib" id="colorBtn" type="button" aria-label="Couleur de la note" title="Couleur">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18c1.4 0 2-1 1.6-2-.5-1.3.3-2.5 1.8-2.5H17a4 4 0 004-4c0-5-4-9.5-9-9.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15.5" cy="7.5" r="1"/></svg>
+      </button>
+      <button class="ib" id="delBtn" type="button" aria-label="Supprimer la note" title="Supprimer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+      </button>
+    </header>
+
+    <div class="toolbar" id="toolbar" role="toolbar" aria-label="Mise en forme">
+      <button class="tb" data-cmd="undo" type="button" title="Annuler" aria-label="Annuler">↶</button>
+      <button class="tb" data-cmd="redo" type="button" title="Rétablir" aria-label="Rétablir">↷</button>
+      <span class="sep"></span>
+      <select class="sel" id="blockSel" aria-label="Style de paragraphe">
+        <option value="p">Texte</option>
+        <option value="h1">Titre 1</option>
+        <option value="h2">Titre 2</option>
+        <option value="h3">Titre 3</option>
+        <option value="blockquote">Citation</option>
+      </select>
+      <select class="sel" id="fontSel" aria-label="Police"></select>
+      <select class="sel" id="sizeSel" aria-label="Taille du texte"></select>
+      <span class="sep"></span>
+      <button class="tb" data-cmd="bold" type="button" title="Gras" aria-label="Gras"><b>B</b></button>
+      <button class="tb" data-cmd="italic" type="button" title="Italique" aria-label="Italique"><i>I</i></button>
+      <button class="tb" data-cmd="underline" type="button" title="Souligné" aria-label="Souligné"><u>U</u></button>
+      <button class="tb" data-cmd="strikeThrough" type="button" title="Barré" aria-label="Barré"><s>S</s></button>
+      <label class="tb colorbtn" title="Couleur du texte">
+        <span class="swatch-a" id="fgMark">A</span>
+        <input type="color" id="fgColor" value="#e5395b" aria-label="Couleur du texte">
+      </label>
+      <label class="tb colorbtn" title="Surligner">
+        <span class="swatch-hl" id="hlMark">▮</span>
+        <input type="color" id="hlColor" value="#ffe58a" aria-label="Surlignage">
+      </label>
+      <button class="tb" data-cmd="clear" type="button" title="Effacer la mise en forme" aria-label="Effacer la mise en forme">Tx</button>
+      <span class="sep"></span>
+      <button class="tb" data-cmd="justifyLeft" type="button" title="Aligner à gauche" aria-label="Aligner à gauche">⇤</button>
+      <button class="tb" data-cmd="justifyCenter" type="button" title="Centrer" aria-label="Centrer">↔</button>
+      <button class="tb" data-cmd="justifyRight" type="button" title="Aligner à droite" aria-label="Aligner à droite">⇥</button>
+      <span class="sep"></span>
+      <button class="tb" data-cmd="insertUnorderedList" type="button" title="Liste à puces" aria-label="Liste à puces">• —</button>
+      <button class="tb" data-cmd="insertOrderedList" type="button" title="Liste numérotée" aria-label="Liste numérotée">1.</button>
+      <button class="tb" data-cmd="checklist" type="button" title="Cases à cocher" aria-label="Cases à cocher">☑</button>
+      <span class="sep"></span>
+      <button class="tb" data-cmd="table" type="button" title="Tableau" aria-label="Insérer un tableau">▦</button>
+      <button class="tb" data-cmd="link" type="button" title="Lien" aria-label="Insérer un lien">🔗</button>
+      <button class="tb" data-cmd="hr" type="button" title="Séparateur" aria-label="Insérer un séparateur">―</button>
+    </div>
+
+    <div class="tablebar" id="tableBar" hidden>
+      <span class="muted">Tableau</span>
+      <button class="chip" data-tbl="addRow" type="button">+ ligne</button>
+      <button class="chip" data-tbl="addCol" type="button">+ colonne</button>
+      <button class="chip" data-tbl="delRow" type="button">− ligne</button>
+      <button class="chip" data-tbl="delCol" type="button">− colonne</button>
+      <button class="chip danger" data-tbl="delTable" type="button">Supprimer le tableau</button>
+    </div>
+
+    <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Écris ici…" aria-label="Contenu de la note"></div>
+    <footer class="statusbar" id="status"></footer>
+  </main>
+
+  <aside id="listPane">
+    <header class="listhead">
+      <h2>Notes</h2>
+      <button class="chip install" data-install type="button">Installer l’appli</button>
+      <button class="ib accent" id="newBtn" type="button" aria-label="Nouvelle note" title="Nouvelle note">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </header>
+    <div class="searchwrap">
+      <input id="search" type="search" placeholder="Rechercher une note" aria-label="Rechercher une note">
+    </div>
+    <div id="list" class="list"></div>
+    <p id="listEmpty" class="muted list-empty" hidden></p>
+    <button class="fab mobile-only" id="fab" type="button" aria-label="Nouvelle note">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </aside>
+</div>
+
+<!-- Community -->
+<section id="community" class="view" hidden></section>
+<!-- Settings -->
+<section id="settingsView" class="view" hidden></section>
+
+<!-- Barre de navigation en verre -->
+<nav id="dock" role="tablist" aria-label="Navigation" hidden>
+  <span id="dockLens" aria-hidden="true"></span>
+  <button type="button" role="tab" id="tabPersonal" data-tab="personal" aria-selected="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 12h6M10 16h6"/></svg><span>Personal</span></button>
+  <button type="button" role="tab" id="tabCommunity" data-tab="community" aria-selected="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.5 7.2L4 21l1.8-5.2A8 8 0 1121 12z"/><path d="M9 11h6M9 14h4"/></svg><span>Community</span></button>
+  <button type="button" role="tab" id="tabSettings" data-tab="settings" aria-selected="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><i class="dav" hidden></i><span>Settings</span></button>
+</nav>
+<div id="toasts" aria-live="polite"></div>
+
+<!-- Tableau -->
+<dialog id="tableDlg">
+  <form class="sheet" id="tableForm" method="dialog">
+    <h3>Insérer un tableau</h3>
+    <div class="field inline">
+      <label for="tRows">Lignes</label>
+      <input id="tRows" type="number" min="1" max="30" value="3">
+    </div>
+    <div class="field inline">
+      <label for="tCols">Colonnes</label>
+      <input id="tCols" type="number" min="1" max="10" value="3">
+    </div>
+    <label class="check"><input id="tHead" type="checkbox" checked> Première ligne en en-tête</label>
+    <div class="row-end">
+      <button class="btn ghost" type="button" id="tableCancel">Annuler</button>
+      <button class="btn primary" type="submit">Insérer</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Couleur de la note -->
+<dialog id="colorDlg">
+  <div class="sheet">
+    <h3>Couleur de la note</h3>
+    <div id="noteColors" class="swatches big"></div>
+  </div>
+</dialog>
+
+<script type="module" src="app.js"></script>
+<script type="module" src="shell.js"></script>
+</body>
+</html>

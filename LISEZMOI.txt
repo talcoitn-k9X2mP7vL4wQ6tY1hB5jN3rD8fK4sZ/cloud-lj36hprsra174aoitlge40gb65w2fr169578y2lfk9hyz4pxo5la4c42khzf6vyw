@@ -1,0 +1,5 @@
+TalcoCloud — INTERFACE (site secret)
+Depot sur le compte talcoitn-k9x2mp7vl4wq6ty1hb5jn3rd8fk4sz, nom du depot : cloud-lj36hprsra174aoitlge40gb65w2fr169578y2lfk9hyz4pxo5la4c42khzf6vyw
+Adresse : https://talcoitn-k9x2mp7vl4wq6ty1hb5jn3rd8fk4sz.github.io/cloud-lj36hprsra174aoitlge40gb65w2fr169578y2lfk9hyz4pxo5la4c42khzf6vyw/
+Tous les fichiers a la racine. Plus de formulaire de connexion : fonctionne uniquement dans https://natlacaxi.github.io/cloud/.
+Serveur Firebase : itn-4. Les regles sont dans firebase-prive.zip (itn-4_realtime.rules.json).
