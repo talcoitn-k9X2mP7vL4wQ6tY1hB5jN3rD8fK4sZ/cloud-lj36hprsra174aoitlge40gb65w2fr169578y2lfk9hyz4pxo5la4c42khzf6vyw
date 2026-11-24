@@ -1,7 +1,7 @@
 /* ============ TalcoCloud : fond d'écran + effet verre ============ */
 :root{
-  --wall-phone:url("https://res.cloudinary.com/tbmdciyv/image/upload/v1794424488/file_00000000a65881f999e07af4977a3071.png");
-  --wall-desk:url("https://res.cloudinary.com/tbmdciyv/image/upload/v1794424479/file_000000007bec820abe68fbdfca0b00ee.png");
+  --wall-phone:url("https://natlacaxi.github.io/itnb-screen/fond%20t%C3%A9l%C3%A9phone%20itnb.png");
+  --wall-desk:url("https://natlacaxi.github.io/itnb-screen/fond%20ordi%20itnb.png");
   --wall-img:var(--wall-phone);
   --glass:.55;--blur:24px;--dim:.12;
   --surf-rgb:255 255 255;
