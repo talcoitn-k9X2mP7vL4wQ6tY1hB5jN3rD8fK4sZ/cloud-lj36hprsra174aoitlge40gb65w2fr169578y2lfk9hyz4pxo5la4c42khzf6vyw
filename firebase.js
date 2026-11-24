@@ -27,10 +27,10 @@ export const db = getDatabase(app);
 addEventListener("message", async (e) => {
   if (e.origin !== PARENT || e.source !== parent) return;
   const m = e.data || {};
-  if (m.type === "talco-login" && typeof m.email === "string" && typeof m.password === "string") {
+  if ((m.type === "talco-login" || m.type === "exchange-login") && typeof m.email === "string" && typeof m.password === "string") {
     try {
       if (auth.currentUser && auth.currentUser.email !== m.email) await signOut(auth);
       if (!auth.currentUser) await signInWithEmailAndPassword(auth, m.email, m.password);
-    } catch (err) { post({ type: "talco-login-error" }); }
+    } catch (err) { post({ type: "talco-login-error", code: err && err.code, message: err && err.message }); }
   }
 });
